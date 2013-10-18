@@ -95,6 +95,7 @@ timer_elapsed (int64_t then)
 
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
+
 void
 timer_sleep (int64_t ticks) 
 {
@@ -104,6 +105,23 @@ timer_sleep (int64_t ticks)
   //while (timer_elapsed (start) < ticks) 
   //  thread_yield ();  modified , while -loop 제거
   thread_sleep(ticks);
+}
+//thread_sleep() 구현 부분
+void thread_sleep (int64_t interval)
+{
+  int64_t curr = timer_ticks();
+  struct thread *curr = thread_current();
+  ASSERT (!intr_context());
+  enum intr_level old_level = intr_disable();
+  curr -> timeout = interval + cur_tick;
+  list_insert_ordered(&wait_list, &curr -> elem, is_timeout_prior, NULL ); //현재 쓰레드를 waitqueue에 넣고 정렬
+  thread_block(); // 현재 thread block
+  intr_set_level (old_level);
+}
+
+
+
+
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be

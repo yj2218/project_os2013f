@@ -23,6 +23,7 @@
 /* List of processes in THREAD_READY state, that is, processes
    that are ready to run but not actually running. */
 static struct list ready_list;
+static struct list wait_list; // wait list 선언 추가
 
 /* List of all processes.  Processes are added to this list
    when they are first scheduled and removed when they exit. */
@@ -120,11 +121,16 @@ thread_start (void)
 /* Called by the timer interrupt handler at each timer tick.
    Thus, this function runs in an external interrupt context. */
 void
+
+/* awake threads */
 thread_tick (void) 
 {
   struct thread *t = thread_current ();
-
+   /*modified codes */
+   int64_t curr = timer_ticks();
+   
   /* Update statistics. */
+  
   if (t == idle_thread)
     idle_ticks++;
 #ifdef USERPROG
@@ -133,6 +139,22 @@ thread_tick (void)
 #endif
   else
     kernel_ticks++;
+// modified ; thread가 timeout되면 thread를 unblock
+   struct thread *wait_thread;
+   struct list_elem *waitl;
+while(!list_empty (&wait_list))
+{
+   waitl = list_front (&wait_list);
+   wait_thread = list_entry(waitl,struct thread, elem);
+   if(curr < list_etnry (&wait_list))
+   {
+      break;
+   }else{
+      thread_unblock (wait_thread);
+      list_remove (waitl);
+   }
+}
+
 
   /* Enforce preemption. */
   if (++thread_ticks >= TIME_SLICE)

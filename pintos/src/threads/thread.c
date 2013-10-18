@@ -142,17 +142,13 @@ thread_tick (void)
 // modified ; thread가 timeout되면 thread를 unblock
    struct thread *wait_thread;
    struct list_elem *waitl;
-while(list_empty (&wait_list))
+for(waitl = list_front (&wait_list),
+    wait_thread = list_entry(waitl, struct thread, elem);
+    ((!list_empty (&wait_list))&&(curr >= list_entry (&wait_list))); //만약 현재 tick이 이미 초과한 경우
+    )
 {
-   waitl = list_front (&wait_list);
-   wait_thread = list_entry(waitl,struct thread, elem);
-   if(curr < list_etnry (&wait_list))
-   {
-      break;
-   }else{
-      thread_unblock (wait_thread);
+      thread_unblock (wait_thread); //쓰레드를 언블록합니다.
       list_remove (waitl);
-   }
 }
 
 

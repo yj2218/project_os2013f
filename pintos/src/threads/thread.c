@@ -142,7 +142,7 @@ thread_tick (void)
 // modified ; thread가 timeout되면 thread를 unblock
    struct thread *wait_thread;
    struct list_elem *waitl;
-while(!list_empty (&wait_list))
+while(list_empty (&wait_list))
 {
    waitl = list_front (&wait_list);
    wait_thread = list_entry(waitl,struct thread, elem);

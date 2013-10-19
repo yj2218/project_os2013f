@@ -1,6 +1,8 @@
 
-
 #ifndef _RBTREE_H_
+
+#include <assert.h>
+#include <stdlib.h>
 
 enum rbtree_node_color { RED, BLACK };
 

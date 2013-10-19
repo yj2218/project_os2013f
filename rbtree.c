@@ -1,4 +1,3 @@
-
 #include "rbtree.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -178,7 +177,7 @@ void replace_node(rbtree t, node oldn, node newn) {
         newn->parent = oldn->parent;
     }
 }
-void rbtree_insert(rbtree t, void* key, void* value, compare_func compare) {
+rbtree_node rbtree_insert(rbtree t, void* key, void* value, compare_func compare) {
     node inserted_node = new_node(key, value, RED, NULL, NULL);
     if (t->root == NULL) {
         t->root = inserted_node;
@@ -210,6 +209,7 @@ void rbtree_insert(rbtree t, void* key, void* value, compare_func compare) {
     }
     insert_case1(t, inserted_node);
     verify_properties(t);
+    return inserted_node;
 }
 void insert_case1(rbtree t, node n) {
     if (n->parent == NULL)
